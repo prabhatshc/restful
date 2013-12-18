@@ -46,8 +46,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<!---->
-			
-			
+
+
 			<!-- validator -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -200,13 +200,18 @@
 				<version>${spring.version}</version>
 				<scope>test</scope>
 			</dependency>
-            <!-- -->
+			<!-- -->
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
 				<version>99-empty</version>
 			</dependency>
-			
+
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.4</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -233,43 +238,11 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>2.4</version>
-					<!-- -->
-					<executions>
-						<execution>
-							<phase>compile</phase>
-							<goals>
-								<goal>exploded</goal>
-							</goals>
-						</execution>
-					</executions>
+					<version>2.3</version>
 					<configuration>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-war-plugin</artifactId>
-										<versionRange>[2.2,)</versionRange>
-										<goals>
-											<goal>exploded</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
+
 			</plugins>
 		</pluginManagement>
 	</build>
