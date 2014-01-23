@@ -42,8 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "SqlResource", propOrder = {
     "query",
     "metadata",
-    "validatedAttribute",
-    "http"
+    "validatedAttribute"
 })
 public class SqlResourceDefinition {
 
@@ -52,7 +51,7 @@ public class SqlResourceDefinition {
     @XmlElement(required = true)
     protected MetaData metadata;
     protected List<ValidatedAttribute> validatedAttribute;
-    protected HttpConfig http;
+    
 
     /**
      * Gets the value of the query property.
@@ -131,28 +130,6 @@ public class SqlResourceDefinition {
         return this.validatedAttribute;
     }
 
-    /**
-     * Gets the value of the http property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link HttpConfig }
-     *     
-     */
-    public HttpConfig getHttp() {
-        return http;
-    }
-
-    /**
-     * Sets the value of the http property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link HttpConfig }
-     *     
-     */
-    public void setHttp(HttpConfig value) {
-        this.http = value;
-    }
+   
 
 }

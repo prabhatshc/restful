@@ -30,5 +30,6 @@ public interface SqlResource {
 	 */
 	public SqlResourceMetaData getMetaData();
 
+
 	
 }
