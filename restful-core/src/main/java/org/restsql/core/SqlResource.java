@@ -1,6 +1,8 @@
 /* Copyright (c) restSQL Project Contributors. Licensed under MIT. */
 package org.restsql.core;
 
+import org.geotools.data.jdbc.FilterToSQLException;
+import org.geotools.filter.text.cql2.CQLException;
 import org.restsql.core.sqlresource.SqlResourceDefinition;
 
 /**
@@ -29,6 +31,17 @@ public interface SqlResource {
 	 * @return SQL rsource meta data
 	 */
 	public SqlResourceMetaData getMetaData();
+	
+	
+
+	/**
+	 * @param RequestSQLParams
+	 * 
+	 * Returns sql.
+	 * 
+	 * @return String
+	 */
+	public String buildSQL(RequestSQLParams params) throws CQLException, FilterToSQLException;
 
 
 	

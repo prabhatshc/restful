@@ -9,6 +9,7 @@ package org.restsql.core;
  * 
  * @author Mark Sawers
  */
+
 public class SqlResourceException extends Exception {
 	private static final long serialVersionUID = 1L;
 

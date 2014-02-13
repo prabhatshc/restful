@@ -28,6 +28,7 @@ import org.restsql.core.TableMetaData.TableRole;
 import org.restsql.core.sqlresource.SqlResourceDefinition;
 import org.restsql.core.sqlresource.SqlResourceDefinitionUtils;
 import org.restsql.core.sqlresource.Table;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
@@ -212,10 +213,11 @@ public abstract class AbstractSqlResourceMetaData implements
 	/** Populates metadata using definition. */
 	@Override
 	public void init(final String resName,
-			final SqlResourceDefinition definition) throws SqlResourceException {
+			final SqlResourceDefinition definition, DataSource dataSource)
+			throws SqlResourceException {
 		this.resName = resName;
 		this.definition = definition;
-
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		String sql = null;
 		SqlResourceDefinitionUtils.validate(definition);
 
@@ -637,8 +639,8 @@ public abstract class AbstractSqlResourceMetaData implements
 	@XmlTransient
 	protected JdbcTemplate jdbcTemplate;
 
-	public void setDataSource(DataSource dataSource) {
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	@Override
+	public JdbcOperations getJdbcOperations() {
+		return this.jdbcTemplate;
 	}
-
 }
