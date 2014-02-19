@@ -12,6 +12,12 @@
 	<context:annotation-config />
 	<context:component-scan base-package="org.restsql.core.impl" />
 
+	<bean id="config" class="org.restsql.core.Config">
+		<property name="sqlResourcesDir" value="/resource"></property>
+		<property name="databaseType" value="postgresql"></property>
+		<property name="limit" value="500"></property>
+	</bean>
+
 
 
 </beans>

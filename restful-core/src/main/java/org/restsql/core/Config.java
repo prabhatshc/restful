@@ -6,9 +6,13 @@ public class Config {
 
 	public static final String POSTGRESQL_RESOURCE_METADATA = "postgresql";
 
-	private String sqlResourcesDir;
+	public static final String DATETIME_FORMAT = "yyyyMMddHHmm";
+
+	private String sqlResourcesDir = "/resource";
 
 	private String databaseType = "postgresql";
+
+	private Integer limit = 1000;
 
 	public Config() {
 
@@ -28,6 +32,14 @@ public class Config {
 
 	public void setDatabaseType(String databaseType) {
 		this.databaseType = databaseType;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
 	}
 
 }

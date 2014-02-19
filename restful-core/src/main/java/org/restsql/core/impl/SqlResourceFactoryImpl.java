@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service("SqlResourceFactory")
+@Service("sqlResourceFactory")
 public class SqlResourceFactoryImpl implements SqlResourceFactory {
 
 	private Map<String, SqlResource> sqlResources = new HashMap<String, SqlResource>();
@@ -85,10 +85,13 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 						sqlResourceMetaData);
 				sqlResources.put(resName, sqlResource);
 			} catch (final JAXBException exception) {
-				throw new SqlResourceFactoryException(
-						"Error unmarshalling SQL Resource "
-								+ getSqlResourceFileName(resName) + " -- "
-								+ exception.getMessage());
+
+				StringBuffer bufferE = new StringBuffer(
+						"Error unmarshalling SQL Resource ")
+						.append(getSqlResourceFileName(resName)).append(" -- ")
+						.append(exception.getMessage());
+				logger.error(bufferE.toString());
+				throw new SqlResourceFactoryException(bufferE.toString());
 			} finally {
 				if (inputStream != null) {
 					try {

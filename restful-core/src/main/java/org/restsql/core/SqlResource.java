@@ -42,6 +42,15 @@ public interface SqlResource {
 	 * @return String
 	 */
 	public String buildSQL(RequestSQLParams params) throws CQLException, FilterToSQLException;
+	
+	/**
+	 * @param RequestSQLParams
+	 * 
+	 * Returns JsonNode.
+	 * 
+	 * @return JsonNode
+	 */
+	public Object read(RequestSQLParams params) ;
 
 
 	

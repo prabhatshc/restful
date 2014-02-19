@@ -1,7 +1,6 @@
 /* Copyright (c) restSQL Project Contributors. Licensed under MIT. */
 package org.restsql.core.impl;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -11,6 +10,8 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.filter.Filter;
 import org.restsql.core.ColumnMetaData;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 /**
  * Contains utilities to manage SQL and java.sql.ResultSets.
@@ -22,7 +23,7 @@ public class SqlUtils {
 	private static final FilterToSQL filterToSQL = new FilterToSQL();
 
 	public static Object getObjectByColumnLabel(final ColumnMetaData column,
-			final ResultSet resultSet) throws SQLException {
+			final SqlRowSet resultSet) throws SQLException {
 		Object value = null;
 		if (column.getColumnType() == Types.DATE
 				&& column.getColumnTypeName().equals("YEAR")) {
@@ -38,7 +39,7 @@ public class SqlUtils {
 	}
 
 	public static Object getObjectByColumnNumber(final ColumnMetaData column,
-			final ResultSet resultSet) throws SQLException {
+			final SqlRowSet resultSet) throws SQLException {
 		Object value = null;
 		if (column.getColumnType() == Types.DATE
 				&& column.getColumnTypeName().equals("YEAR")) {
@@ -69,7 +70,7 @@ public class SqlUtils {
 
 		Filter filter = ECQL.toFilter(filterClause);
 		String result = filterToSQL.encodeToString(filter);
-		
+
 		return result;
 	}
 
@@ -114,5 +115,14 @@ public class SqlUtils {
 		}
 
 		return "";
+	}
+
+	public static String lookupColumnName(SqlRowSetMetaData resultSetMetaData,
+			int columnIndex) throws SQLException {
+		String name = resultSetMetaData.getColumnLabel(columnIndex);
+		if (name == null || name.length() < 1) {
+			name = resultSetMetaData.getColumnName(columnIndex);
+		}
+		return name;
 	}
 }

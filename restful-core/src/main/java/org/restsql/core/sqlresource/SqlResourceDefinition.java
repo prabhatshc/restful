@@ -5,21 +5,33 @@
 // Generated on: 2012.10.07 at 09:30:00 AM EDT 
 //
 
-
 package org.restsql.core.sqlresource;
 
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 /**
- * <p>Java class for SqlResource complex type.
+ * <p>
+ * Java class for SqlResource complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="SqlResource">
@@ -39,97 +51,165 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SqlResource", propOrder = {
-    "query",
-    "metadata",
-    "validatedAttribute"
-})
+@XmlType(name = "SqlResource", propOrder = { "query", "metadata",
+		"validatedAttribute" })
 public class SqlResourceDefinition {
 
-    @XmlElement(required = true)
-    protected Query query;
-    @XmlElement(required = true)
-    protected MetaData metadata;
-    protected List<ValidatedAttribute> validatedAttribute;
-    
+	@XmlElement(required = true)
+	protected Query query;
+	@XmlElement(required = true)
+	protected MetaData metadata;
 
-    /**
-     * Gets the value of the query property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Query }
-     *     
-     */
-    public Query getQuery() {
-        return query;
-    }
+	protected List<ValidatedAttribute> validatedAttribute;
 
-    /**
-     * Sets the value of the query property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Query }
-     *     
-     */
-    public void setQuery(Query value) {
-        this.query = value;
-    }
+	@XmlTransient
+	private ListMultimap<String, ValidatedAttribute> validatedAttributeMap;
 
-    /**
-     * Gets the value of the metadata property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MetaData }
-     *     
-     */
-    public MetaData getMetadata() {
-        return metadata;
-    }
+	@XmlTransient
+	private Map<String, String> formatMap;
 
-    /**
-     * Sets the value of the metadata property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MetaData }
-     *     
-     */
-    public void setMetadata(MetaData value) {
-        this.metadata = value;
-    }
+	@XmlTransient
+	private Map<String, Format> formatterMap;
 
-    /**
-     * Gets the value of the validatedAttribute property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the validatedAttribute property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getValidatedAttribute().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ValidatedAttribute }
-     * 
-     * 
-     */
-    public List<ValidatedAttribute> getValidatedAttribute() {
-        if (validatedAttribute == null) {
-            validatedAttribute = new ArrayList<ValidatedAttribute>();
-        }
-        return this.validatedAttribute;
-    }
+	/**
+	 * Gets the value of the query property.
+	 * 
+	 * @return possible object is {@link Query }
+	 * 
+	 */
+	public Query getQuery() {
+		return query;
+	}
 
-   
+	/**
+	 * Sets the value of the query property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Query }
+	 * 
+	 */
+	public void setQuery(Query value) {
+		this.query = value;
+	}
+
+	/**
+	 * Gets the value of the metadata property.
+	 * 
+	 * @return possible object is {@link MetaData }
+	 * 
+	 */
+	public MetaData getMetadata() {
+		return metadata;
+	}
+
+	/**
+	 * Sets the value of the metadata property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link MetaData }
+	 * 
+	 */
+	public void setMetadata(MetaData value) {
+		this.metadata = value;
+	}
+
+	/**
+	 * Gets the value of the validatedAttribute property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the validatedAttribute property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getValidatedAttribute().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link ValidatedAttribute }
+	 * 
+	 * 
+	 */
+	public List<ValidatedAttribute> getValidatedAttribute() {
+		if (validatedAttribute == null) {
+			validatedAttribute = new ArrayList<ValidatedAttribute>();
+		}
+		return this.validatedAttribute;
+	}
+
+	public ListMultimap<String, ValidatedAttribute> getValidatedAttributeMap() {
+		if (null == validatedAttributeMap)
+			validatedAttributeMap = ArrayListMultimap.create();
+
+		if (null != validatedAttribute && validatedAttribute.size() > 0) {
+			for (ValidatedAttribute v : validatedAttribute) {
+				validatedAttributeMap.put(v.getName(), v);
+			}
+		}
+		return validatedAttributeMap;
+	}
+
+	public String getFormatPattern(String key) {
+
+		if (null == formatMap) {
+			formatMap = new HashMap<String, String>();
+
+			ListMultimap<String, ValidatedAttribute> map = getValidatedAttributeMap();
+			Set<String> keySet = map.keySet();
+			for (String k : keySet) {
+				List<ValidatedAttribute> vl = map.get(k);
+				int size = vl.size();
+				for (int i = 0; i < size; i++) {
+					ValidatedAttribute va = vl.get(i);
+					if (va.getFormat() != null
+							&& !va.getFormat().trim().equals("")) {
+						formatMap.put(key, va.getFormat());
+					}
+				}
+			}
+
+		}
+
+		return formatMap.get(key);
+	}
+
+	public Format getFormatter(String key) {
+		if (null == formatterMap) {
+			formatterMap = new HashMap<String, Format>();
+
+			ListMultimap<String, ValidatedAttribute> map = getValidatedAttributeMap();
+			Set<String> keySet = map.keySet();
+
+			for (String k : keySet) {
+				List<ValidatedAttribute> vl = map.get(k);
+				int size = vl.size();
+				for (int i = 0; i < size; i++) {
+					ValidatedAttribute va = vl.get(i);
+					if (va.getFormat() != null
+							&& !va.getFormat().trim().equals("")) {
+
+						if (va.getType().equalsIgnoreCase(
+								ValidatedAttributeType.Datetime.toString())) {
+							formatterMap.put(key, new SimpleDateFormat(
+									getFormatPattern(key)));
+						} else if (va.getType().equalsIgnoreCase(
+								ValidatedAttributeType.Numeric.toString())) {
+							formatterMap.put(key, new DecimalFormat(
+									getFormatPattern(key)));
+						}
+
+					}
+				}
+			}
+		}
+
+		return formatterMap.get(key);
+	}
 
 }
