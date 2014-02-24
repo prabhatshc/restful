@@ -1,5 +1,7 @@
 package org.restsql.core;
 
+import org.restsql.core.impl.SqlUtils;
+
 public class SqlStruct {
 
 	private StringBuffer clause;
@@ -60,15 +62,18 @@ public class SqlStruct {
 	public String getStructSql() {
 
 		StringBuffer struct = new StringBuffer();
-		struct.append(main.toString());
-		if (this.clause.length() > 0) {
+
+		struct.append(SqlUtils.removeWhitespaceFromSql(main.toString()));
+		if (this.clause.length() > 0)
+
+		{
 			if (struct.indexOf("where ") > 0 || struct.indexOf("WHERE ") > 0) {
 				String clauseString = this.clause.toString().replaceFirst(
 						"where ", "");
 				clauseString.replaceFirst("WHERE ", "");
 				struct.append(" AND ").append(clauseString);
-			} else if (this.clause.indexOf("where ") > 0
-					|| this.clause.indexOf("WHERE ") > 0) {
+			} else if (this.clause.indexOf("where ") >= 0
+					|| this.clause.indexOf("WHERE ") >= 0) {
 				struct.append(" ").append(this.clause.toString().trim());
 			} else {
 				struct.append(" WHERE ").append(this.clause.toString().trim());

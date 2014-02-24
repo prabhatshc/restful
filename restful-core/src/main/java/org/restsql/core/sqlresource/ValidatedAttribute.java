@@ -71,6 +71,8 @@ public class ValidatedAttribute {
 	protected String validatorClass;
 	@XmlAttribute(name = "format")
 	protected String format;
+	@XmlAttribute(name = "replacement")
+	protected String replacement;
 
 	/**
 	 * Gets the value of the name property.
@@ -246,6 +248,23 @@ public class ValidatedAttribute {
 
 	public void setFormat(String format) {
 		this.format = format;
+	}
+
+	public String getReplacement() {
+		return replacement;
+	}
+
+	public void setReplacement(String replacement) {
+		this.replacement = replacement;
+	}
+
+	@Override
+	public String toString() {
+		return "ValidatedAttribute [name=" + name + ", type=" + type
+				+ ", minLength=" + minLength + ", maxLength=" + maxLength
+				+ ", regex=" + regex + ", minValue=" + minValue + ", maxValue="
+				+ maxValue + ", validatorClass=" + validatorClass + ", format="
+				+ format + ", replacement=" + replacement + "]";
 	}
 
 }

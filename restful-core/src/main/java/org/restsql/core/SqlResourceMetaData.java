@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.restsql.core.sqlresource.SqlResourceDefinition;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 
 /**
@@ -48,8 +49,9 @@ public interface SqlResourceMetaData {
 	public boolean isHierarchical();
 
 	public void init(String sqlResourceName, SqlResourceDefinition definition,
-			DataSource dataSource) throws SqlResourceException;
-	
+			DataSource dataSource) throws SqlResourceException,
+			DataAccessException;
+
 	public JdbcOperations getJdbcOperations();
 
 	public String toXml();

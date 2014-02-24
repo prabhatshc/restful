@@ -10,7 +10,7 @@
 		<module>restful-core</module>
 		<module>restful-web</module>
 	</modules>
-	
+
 	<properties>
 		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +20,7 @@
 		<slf4j.version>1.7.5</slf4j.version>
 		<junit.version>4.11</junit.version>
 		<jackson2.version>2.3.1</jackson2.version>
-		<spring.version>4.0.1.RELEASE</spring.version>
+		<spring.version>4.0.2.RELEASE</spring.version>
 		<druid.version>1.0.2</druid.version>
 		<geotools.version>10.4</geotools.version>
 		<validation-api.version>1.0.0.GA</validation-api.version>
@@ -52,9 +52,18 @@
 			<url>http://version99.qos.ch/</url>
 		</repository>
 	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<!---->
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>${spring.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
 
 			<!-- validator -->
@@ -105,13 +114,31 @@
 				<classifier>sources</classifier>
 			</dependency>
 			<!-- Spring dependencies -->
-
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-expression</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -129,10 +156,19 @@
 				<artifactId>spring-jdbc</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-oxm</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
@@ -155,9 +191,19 @@
 				<artifactId>logback-classic</artifactId>
 				<version>${logback.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.logback-extensions</groupId>
+				<artifactId>logback-ext-spring</artifactId>
+				<version>0.1.1</version>
+			</dependency>
 			<!-- jackson2 -->
 			<!-- the core, which includes Streaming API, shared low-level abstractions 
 				(but NOT data-binding) -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson2.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>

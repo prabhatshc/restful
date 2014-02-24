@@ -15,7 +15,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java-version>1.7</java-version>
-		<org.springframework-version>4.0.0.RELEASE</org.springframework-version>
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -46,17 +45,6 @@
 			<url>http://repo.spring.io/milestone</url>
 		</repository>
 	</repositories>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-framework-bom</artifactId>
-				<version>4.0.0.RELEASE</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 		<!-- restful -->
 		<dependency>
@@ -95,12 +83,16 @@
 			<artifactId>spring-orm</artifactId>
 		</dependency>
 
-		<!-- Spring Data -->
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-commons</artifactId>
-			<version>1.6.3.RELEASE</version>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+
 
 		<!-- javax.validation (JSR-303) -->
 		<dependency>
@@ -152,10 +144,7 @@
 			<artifactId>jackson-dataformat-csv</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
+
 
 		<!-- Test -->
 		<dependency>
@@ -170,7 +159,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-	<!-- Generate compiled stuff in the folder used for developing mode -->
+		<!-- Generate compiled stuff in the folder used for developing mode -->
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 		<plugins>
 			<plugin>

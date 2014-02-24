@@ -1,7 +1,6 @@
 package org.restsql.core.impl;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,12 +14,14 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.restsql.core.ColumnMetaData;
 import org.restsql.core.RequestSQLParams;
 import org.restsql.core.SqlResource;
+import org.restsql.core.SqlResourceFactory;
 import org.restsql.core.SqlResourceMetaData;
 import org.restsql.core.SqlStruct;
 import org.restsql.core.TableMetaData.TableRole;
 import org.restsql.core.sqlresource.SqlResourceDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,21 +38,30 @@ public class SqlResourceImpl implements SqlResource {
 	private Cache<RequestSQLParams, String> cache;
 	private final ObjectMapper objectMapper;
 
-	private final Logger logger = LoggerFactory
-			.getLogger(SqlResourceImpl.class);
+	private SqlResourceFactory sqlResourceFactory;
+
+	Logger logger;
 
 	public SqlResourceImpl(final String name,
 			final SqlResourceDefinition definition,
-			final SqlResourceMetaData metaData) {
+			final SqlResourceMetaData metaData, SqlResourceFactory factory) {
 		this.name = name;
 		this.definition = definition;
-		definition.getQuery().setValue(
-				SqlUtils.removeWhitespaceFromSql(definition.getQuery()
-						.getValue()));
+		definition.getQuery().setValue(definition.getQuery().getValue());
 		this.metaData = metaData;
+		this.sqlResourceFactory = factory;
 
-		cache = CacheBuilder.newBuilder().maximumSize(1000)
-				.expireAfterWrite(60, TimeUnit.MINUTES).build();
+		logger = LoggerFactory.getLogger("[" + name + "]");
+
+		cache = CacheBuilder
+				.newBuilder()
+				.maximumSize(
+						this.sqlResourceFactory.getSqlConfig()
+								.getMaxCacheSize())
+				.expireAfterWrite(
+						this.sqlResourceFactory.getSqlConfig()
+								.getExpireAfterWrite(), TimeUnit.SECONDS)
+				.build();
 
 		objectMapper = new ObjectMapper();
 
@@ -78,9 +88,11 @@ public class SqlResourceImpl implements SqlResource {
 
 		String sql = cache.getIfPresent(params);
 		if (null == sql) {
+			logger.debug(SqlUtils.buildSQLFilterClause(params.getFilter()));
 			SqlStruct struct = new SqlStruct(this.definition.getQuery()
 					.getValue(), SqlUtils.buildSQLFilterClause(params
 					.getFilter()));
+
 			if (null != params.getLimit())
 				struct.setLimit(params.getLimit());
 
@@ -90,47 +102,35 @@ public class SqlResourceImpl implements SqlResource {
 			struct.setOrderByClause(SqlUtils.buildSQLOrderByClause(params
 					.getOrderby()));
 
-			sql = SqlUtils.removeWhitespaceFromSql(struct.getStructSql());
+			sql = struct.getStructSql();
 
 			cache.put(params, sql);
 		}
-
+		logger.debug(sql);
 		return sql;
 	}
 
 	@Override
-	public Object read(RequestSQLParams params) {
+	public Object read(RequestSQLParams params) throws CQLException,
+			DataAccessException, FilterToSQLException {
 
-		try {
-			String sql = buildSQL(params);
-			logger.debug(sql);
-			SqlRowSet resultSet = this.metaData.getJdbcOperations()
-					.queryForRowSet(sql);
+		String sql = buildSQL(params);
 
-			if (metaData.isHierarchical()) {
-				return buildReadResultsHierachicalCollection(resultSet);
-			} else {
+		SqlRowSet resultSet = this.metaData.getJdbcOperations().queryForRowSet(
+				sql);
 
-				return buildReadResultsFlatCollection(resultSet);
+		if (metaData.isHierarchical()) {
+			return buildReadResultsHierachicalCollection(resultSet);
+		} else {
 
-			}
+			return buildReadResultsFlatCollection(resultSet);
 
-		} catch (CQLException e) {
-
-			logger.error(e.getMessage());
-			return e.getMessage();
-		} catch (FilterToSQLException e) {
-			logger.error(e.getMessage());
-			return e.getMessage();
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-			return e.getMessage();
 		}
 
 	}
 
 	private List<JsonNode> buildReadResultsFlatCollection(
-			final SqlRowSet resultSet) throws SQLException {
+			final SqlRowSet resultSet) {
 		List<JsonNode> listNode = new ArrayList<JsonNode>();
 		while (resultSet.next()) {
 
@@ -151,9 +151,10 @@ public class SqlResourceImpl implements SqlResource {
 	}
 
 	private void addJsonNodeRow(ObjectNode objectNode,
-			ColumnMetaData columnData, SqlRowSet resultSet) throws SQLException {
+			ColumnMetaData columnData, SqlRowSet resultSet) {
 
 		String column = columnData.getColumnLabel();
+
 		Object value = SqlUtils.getObjectByColumnNumber(columnData, resultSet);
 		Format formatter = definition.getFormatter(column);
 		if (value == null) {
@@ -165,7 +166,18 @@ public class SqlResourceImpl implements SqlResource {
 				objectNode.put(column, (Integer) value);
 			}
 		} else if (value instanceof String) {
-			objectNode.put(column, (String) value);
+			if (null != definition.getReplacement(column)
+					&& null != definition.getRegex(column)) {
+				// System.out.println(column);
+				// System.out.println(definition.getReplacement(column));
+				// System.out.println(definition.getRegex(column));
+				objectNode.put(column, ((String) value).replaceAll(
+						definition.getRegex(column),
+						definition.getReplacement(column)));
+			} else {
+
+				objectNode.put(column, (String) value);
+			}
 		} else if (value instanceof Boolean) {
 			objectNode.put(column, (Boolean) value);
 		} else if (value instanceof Date) {
@@ -210,7 +222,7 @@ public class SqlResourceImpl implements SqlResource {
 	}
 
 	private List<Map<String, Object>> buildReadResultsHierachicalCollection(
-			SqlRowSet resultSet) throws SQLException {
+			SqlRowSet resultSet) {
 		final List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
 		final List<Object> currentParentPkValues = new ArrayList<Object>(
 				metaData.getParent().getPrimaryKeys().size());
@@ -296,6 +308,12 @@ public class SqlResourceImpl implements SqlResource {
 
 	private String getChildRowsName() {
 		return metaData.getChild().getTableAlias() + "s";
+	}
+
+	@Override
+	public SqlResourceFactory getSqlResourceFactory() {
+
+		return this.sqlResourceFactory;
 	}
 
 }

@@ -46,6 +46,7 @@
 		<attribute name="maxValue" type="double" use="optional"></attribute>
 		<attribute name="validatorClass" type="string" use="optional"></attribute>
 		<attribute name="format" type="string" use="optional"></attribute>
+		<attribute name="replacement" type="string" use="optional"></attribute>
 	</complexType>
 
 

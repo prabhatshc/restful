@@ -7,14 +7,27 @@
                         ">
 
 
-	<bean id="fsDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
 		init-method="init" destroy-method="close">
-		<property name="url" value="jdbc:postgresql://10.151.96.22:5432/meteo" />
+		<property name="url" value="jdbc:postgresql://10.151.64.155:5432/meteo" />
 		<property name="username" value="staa" />
 		<property name="password" value="123456abcdef" />
 		<property name="initialSize" value="1" />
 		<property name="maxActive" value="20" />
 	</bean>
+	
+	<bean id="sqlConfig" class="org.restsql.core.SqlConfig">
+		<property name="sqlResourcesDir" value="D:/res" />
+		<property name="databaseType" value="postgresql" />
+		<property name="limit" value="500" />
+		<property name="maxCacheSize" value="1000" />
+		<property name="expireAfterWrite" value="60" />
+	</bean>
+	
+	<bean id="restConfig" class="mq.restful.web.config.RestConfig">
+		
+	</bean>
+	
 
 
 

@@ -16,7 +16,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.restsql.core.Config;
+import org.restsql.core.SqlConfig;
 import org.restsql.core.SqlResource;
 import org.restsql.core.SqlResourceException;
 import org.restsql.core.SqlResourceFactory;
@@ -29,6 +29,7 @@ import org.restsql.core.sqlresource.SqlResourceDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service("sqlResourceFactory")
@@ -36,7 +37,7 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 
 	private Map<String, SqlResource> sqlResources = new HashMap<String, SqlResource>();
 
-	private Config config;
+	private SqlConfig sqlConfig;
 
 	private DataSource dataSource;
 
@@ -47,8 +48,8 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 	}
 
 	@Autowired
-	public void setConfig(Config config) {
-		this.config = config;
+	public void setSqlConfig(SqlConfig sqlConfig) {
+		this.sqlConfig = sqlConfig;
 	}
 
 	@Autowired
@@ -72,8 +73,8 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 						.unmarshal(inputStream)).getValue();
 
 				SqlResourceMetaData sqlResourceMetaData;
-				if (config.getDatabaseType().equalsIgnoreCase(
-						Config.POSTGRESQL_RESOURCE_METADATA)) {
+				if (sqlConfig.getDatabaseType().equalsIgnoreCase(
+						SqlConfig.POSTGRESQL_RESOURCE_METADATA)) {
 					sqlResourceMetaData = new PostgreSqlSqlResourceMetaData();
 				} else {
 					sqlResourceMetaData = new MySqlSqlResourceMetaData();
@@ -82,7 +83,7 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 				sqlResourceMetaData.init(resName, definition, dataSource);
 
 				sqlResource = new SqlResourceImpl(resName, definition,
-						sqlResourceMetaData);
+						sqlResourceMetaData, this);
 				sqlResources.put(resName, sqlResource);
 			} catch (final JAXBException exception) {
 
@@ -92,7 +93,10 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 						.append(exception.getMessage());
 				logger.error(bufferE.toString());
 				throw new SqlResourceFactoryException(bufferE.toString());
+			} catch (DataAccessException e) {
+				logger.error(e.getMessage());
 			} finally {
+
 				if (inputStream != null) {
 					try {
 						inputStream.close();
@@ -137,7 +141,7 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 
 	@Override
 	public String getSqlResourcesDir() {
-		return config.getSqlResourcesDir();
+		return sqlConfig.getSqlResourcesDir();
 	}
 
 	@Override
@@ -167,8 +171,11 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 			inputStream = this.getClass().getResourceAsStream(fileName);
 		}
 		if (inputStream == null) {
-			throw new SqlResourceFactoryException("SQL Resource " + resName
-					+ " not found - expected " + fileName);
+			String em = new StringBuffer().append("SQL Resource ")
+					.append(resName).append(" not found - expected ")
+					.append(fileName).toString();
+			logger.error(em);
+			throw new SqlResourceFactoryException(em);
 		}
 		return inputStream;
 	}
@@ -221,6 +228,11 @@ public class SqlResourceFactoryImpl implements SqlResourceFactory {
 			logger.error(message);
 			throw new SqlResourceFactoryException(message);
 		}
+	}
+
+	@Override
+	public SqlConfig getSqlConfig() {
+		return this.sqlConfig;
 	}
 
 }

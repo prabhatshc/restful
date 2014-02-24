@@ -1,6 +1,6 @@
 package org.restsql.core;
 
-public class Config {
+public class SqlConfig {
 
 	public static final String MYSQL_RESOURCE_METADATA = "mysql";
 
@@ -14,7 +14,11 @@ public class Config {
 
 	private Integer limit = 1000;
 
-	public Config() {
+	private Integer maxCacheSize = 1000;
+
+	private Long expireAfterWrite = 3600L;
+
+	public SqlConfig() {
 
 	}
 
@@ -40,6 +44,22 @@ public class Config {
 
 	public void setLimit(Integer limit) {
 		this.limit = limit;
+	}
+
+	public Integer getMaxCacheSize() {
+		return maxCacheSize;
+	}
+
+	public void setMaxCacheSize(Integer maxCacheSize) {
+		this.maxCacheSize = maxCacheSize;
+	}
+
+	public Long getExpireAfterWrite() {
+		return expireAfterWrite;
+	}
+
+	public void setExpireAfterWrite(Long expireAfterWrite) {
+		this.expireAfterWrite = expireAfterWrite;
 	}
 
 }

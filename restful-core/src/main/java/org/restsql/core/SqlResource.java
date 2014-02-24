@@ -4,6 +4,7 @@ package org.restsql.core;
 import org.geotools.data.jdbc.FilterToSQLException;
 import org.geotools.filter.text.cql2.CQLException;
 import org.restsql.core.sqlresource.SqlResourceDefinition;
+import org.springframework.dao.DataAccessException;
 
 /**
  * Represents an SQL Resource, a queryable and updatable database "view".
@@ -49,8 +50,13 @@ public interface SqlResource {
 	 * Returns JsonNode.
 	 * 
 	 * @return JsonNode
+	 * @throws FilterToSQLException 
+	 * @throws DataAccessException 
+	 * @throws CQLException 
 	 */
-	public Object read(RequestSQLParams params) ;
+	public Object read(RequestSQLParams params) throws CQLException, DataAccessException, FilterToSQLException ;
+	
+	public SqlResourceFactory getSqlResourceFactory();
 
 
 	

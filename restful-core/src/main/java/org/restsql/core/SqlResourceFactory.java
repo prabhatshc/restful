@@ -21,6 +21,6 @@ public interface SqlResourceFactory {
 	
 	public boolean isSqlResourceLoaded(final String name);
 	
-	
+	public SqlConfig getSqlConfig();
 
 }

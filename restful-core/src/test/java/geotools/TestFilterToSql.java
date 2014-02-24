@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.opengis.filter.Filter;
+import org.restsql.core.impl.SqlUtils;
 
 public class TestFilterToSql {
 
@@ -29,7 +30,7 @@ public class TestFilterToSql {
 	@Test
 	public void test() throws CQLException, FilterToSQLException {
 		Filter filter = ECQL.toFilter("ATTR1<10 AND ATTR2<2 OR ATTR3>10");
-		String result = this.filterToSQL.encodeToString(filter);
+		String result = SqlUtils.buildSQLFilterClause("ATTR1<+10+AND ATTR2<2 OR ATTR3>10");
 		System.out.println(result);
 		fail("Not yet implemented");
 	}

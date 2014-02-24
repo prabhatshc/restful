@@ -28,6 +28,7 @@ import org.restsql.core.TableMetaData.TableRole;
 import org.restsql.core.sqlresource.SqlResourceDefinition;
 import org.restsql.core.sqlresource.SqlResourceDefinitionUtils;
 import org.restsql.core.sqlresource.Table;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -214,7 +215,7 @@ public abstract class AbstractSqlResourceMetaData implements
 	@Override
 	public void init(final String resName,
 			final SqlResourceDefinition definition, DataSource dataSource)
-			throws SqlResourceException {
+			throws DataAccessException,SqlResourceException {
 		this.resName = resName;
 		this.definition = definition;
 		this.jdbcTemplate = new JdbcTemplate(dataSource);

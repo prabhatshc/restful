@@ -71,6 +71,12 @@ public class SqlResourceDefinition {
 	@XmlTransient
 	private Map<String, Format> formatterMap;
 
+	@XmlTransient
+	private Map<String, String> regexMap;
+
+	@XmlTransient
+	private Map<String, String> replacementMap;
+
 	/**
 	 * Gets the value of the query property.
 	 * 
@@ -144,12 +150,15 @@ public class SqlResourceDefinition {
 	}
 
 	public ListMultimap<String, ValidatedAttribute> getValidatedAttributeMap() {
-		if (null == validatedAttributeMap)
+		if (null == validatedAttributeMap) {
 			validatedAttributeMap = ArrayListMultimap.create();
 
-		if (null != validatedAttribute && validatedAttribute.size() > 0) {
-			for (ValidatedAttribute v : validatedAttribute) {
-				validatedAttributeMap.put(v.getName(), v);
+			if (null != validatedAttribute && validatedAttribute.size() > 0) {
+				for (ValidatedAttribute v : validatedAttribute) {
+					// System.out.println("name:" + v.getName());
+					// System.out.println(v);
+					validatedAttributeMap.put(v.getName(), v);
+				}
 			}
 		}
 		return validatedAttributeMap;
@@ -164,12 +173,12 @@ public class SqlResourceDefinition {
 			Set<String> keySet = map.keySet();
 			for (String k : keySet) {
 				List<ValidatedAttribute> vl = map.get(k);
-				int size = vl.size();
-				for (int i = 0; i < size; i++) {
-					ValidatedAttribute va = vl.get(i);
+				// int size = vl.size();
+				for (ValidatedAttribute va : vl) {
+					// ValidatedAttribute va = vl.get(i);
 					if (va.getFormat() != null
 							&& !va.getFormat().trim().equals("")) {
-						formatMap.put(key, va.getFormat());
+						formatMap.put(k, va.getFormat());
 					}
 				}
 			}
@@ -188,20 +197,22 @@ public class SqlResourceDefinition {
 
 			for (String k : keySet) {
 				List<ValidatedAttribute> vl = map.get(k);
-				int size = vl.size();
-				for (int i = 0; i < size; i++) {
-					ValidatedAttribute va = vl.get(i);
+				// System.out.println(vl.size());
+				// int size = vl.size();
+				for (ValidatedAttribute va : vl) {
+					// ValidatedAttribute va = vl.get(i);
+					// System.out.println(va);
 					if (va.getFormat() != null
 							&& !va.getFormat().trim().equals("")) {
 
 						if (va.getType().equalsIgnoreCase(
 								ValidatedAttributeType.Datetime.toString())) {
-							formatterMap.put(key, new SimpleDateFormat(
-									getFormatPattern(key)));
+							formatterMap.put(k, new SimpleDateFormat(
+									getFormatPattern(k)));
 						} else if (va.getType().equalsIgnoreCase(
 								ValidatedAttributeType.Numeric.toString())) {
-							formatterMap.put(key, new DecimalFormat(
-									getFormatPattern(key)));
+							formatterMap.put(k, new DecimalFormat(
+									getFormatPattern(k)));
 						}
 
 					}
@@ -210,6 +221,53 @@ public class SqlResourceDefinition {
 		}
 
 		return formatterMap.get(key);
+	}
+
+	public String getReplacement(String key) {
+
+		if (null == replacementMap) {
+			replacementMap = new HashMap<String, String>();
+
+			ListMultimap<String, ValidatedAttribute> map = getValidatedAttributeMap();
+			Set<String> keySet = map.keySet();
+			for (String k : keySet) {
+				List<ValidatedAttribute> vl = map.get(k);
+				// List<ValidatedAttribute> vl = map.get(k);
+				// int size = vl.size();
+				for (ValidatedAttribute va : vl) {
+					// ValidatedAttribute va = vl.get(i);
+					if (va.getReplacement() != null) {
+						replacementMap.put(k, va.getReplacement());
+					}
+				}
+			}
+
+		}
+
+		return replacementMap.get(key);
+	}
+
+	public String getRegex(String key) {
+
+		if (null == regexMap) {
+			regexMap = new HashMap<String, String>();
+
+			ListMultimap<String, ValidatedAttribute> map = getValidatedAttributeMap();
+			Set<String> keySet = map.keySet();
+			for (String k : keySet) {
+				List<ValidatedAttribute> vl = map.get(k);
+				// int size = vl.size();
+				for (ValidatedAttribute va : vl) {
+					// ValidatedAttribute va = vl.get(i);
+					if (va.getRegex() != null) {
+						regexMap.put(k, va.getRegex());
+					}
+				}
+			}
+
+		}
+
+		return regexMap.get(key);
 	}
 
 }

@@ -12,10 +12,12 @@
 	<context:annotation-config />
 	<context:component-scan base-package="org.restsql.core.impl" />
 
-	<bean id="config" class="org.restsql.core.Config">
+	<bean id="sqlConfig" class="org.restsql.core.SqlConfig">
 		<property name="sqlResourcesDir" value="/resource"></property>
 		<property name="databaseType" value="postgresql"></property>
 		<property name="limit" value="500"></property>
+		<property name="maxCacheSize" value="1000"></property>
+		<property name="expireAfterWrite" value="3600"></property>
 	</bean>
 
 

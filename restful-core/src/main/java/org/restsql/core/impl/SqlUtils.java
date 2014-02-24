@@ -23,7 +23,7 @@ public class SqlUtils {
 	private static final FilterToSQL filterToSQL = new FilterToSQL();
 
 	public static Object getObjectByColumnLabel(final ColumnMetaData column,
-			final SqlRowSet resultSet) throws SQLException {
+			final SqlRowSet resultSet) {
 		Object value = null;
 		if (column.getColumnType() == Types.DATE
 				&& column.getColumnTypeName().equals("YEAR")) {
@@ -39,7 +39,7 @@ public class SqlUtils {
 	}
 
 	public static Object getObjectByColumnNumber(final ColumnMetaData column,
-			final SqlRowSet resultSet) throws SQLException {
+			final SqlRowSet resultSet) {
 		Object value = null;
 		if (column.getColumnType() == Types.DATE
 				&& column.getColumnTypeName().equals("YEAR")) {
@@ -54,23 +54,31 @@ public class SqlUtils {
 	}
 
 	public static String removeWhitespaceFromSql(String sql) {
-		sql.replaceAll("\\n", "");
-		sql = sql.replaceAll("\\r", "");
-		sql = sql.replaceFirst("\\s+", "");
+		sql.replaceAll("\\n", " ");
+		sql = sql.replaceAll("\\r", " ");
+		sql = sql.replaceFirst("\\s+", " ");
 		sql = sql.replaceFirst("\\t+", " ");
-		sql = sql.replaceFirst("\\t+$", "");
+		sql = sql.replaceFirst("\\t+$", " ");
 		sql = sql.replaceAll("\\t", " ");
 		return sql;
 	}
 
 	public static String buildSQLFilterClause(String filterStr)
 			throws CQLException, FilterToSQLException {
-		String filterClause = filterStr.replaceAll("+", " ");
-		filterClause = filterClause.replaceAll("%20", " ");
 
-		Filter filter = ECQL.toFilter(filterClause);
-		String result = filterToSQL.encodeToString(filter);
+		String result = null;
+		if (null != filterStr && !filterStr.trim().equals("")) {
+			// System.out.println("----------");
+			String filterClause = filterStr.replaceAll("\\+", " ");
+			// System.out.println("-----2-----");
+			filterClause = filterClause.replaceAll("%20", " ");
+			// System.out.println(filterClause);
+			Filter filter;
+			filter = ECQL.toFilter(filterClause);
 
+			result = filterToSQL.encodeToString(filter);
+
+		}
 		return result;
 	}
 
