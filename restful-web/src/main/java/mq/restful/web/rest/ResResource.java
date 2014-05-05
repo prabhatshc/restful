@@ -103,9 +103,9 @@ public class ResResource {
 						CsvSchema schema = builder
 								.build()
 								.withLineSeparator(
-										restConfig.getCsvLineSeparator())
+										restConfig.getCsvConfig().getCsvLineSeparator())
 								.withColumnSeparator(
-										restConfig.getCsvColumnSeparator()
+										restConfig.getCsvConfig().getCsvColumnSeparator()
 												.trim().charAt(0));
 						((CsvMapper) mapper).writer(schema).writeValue(writer,
 								result);

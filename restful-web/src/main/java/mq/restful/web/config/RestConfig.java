@@ -21,9 +21,7 @@ public class RestConfig {
 
 	private Map<String, ObjectMapper> objectMapperMap;
 
-	private String csvLineSeparator = "\n";
-
-	private String csvColumnSeparator = ",";
+	private CsvConfig csvConfig;
 
 	public RestConfig() {
 
@@ -116,20 +114,12 @@ public class RestConfig {
 		this.objectMapperMap = objectMapperMap;
 	}
 
-	public String getCsvLineSeparator() {
-		return csvLineSeparator;
+	public CsvConfig getCsvConfig() {
+		return csvConfig;
 	}
 
-	public void setCsvLineSeparator(String csvLineSeparator) {
-		this.csvLineSeparator = csvLineSeparator;
-	}
-
-	public String getCsvColumnSeparator() {
-		return csvColumnSeparator;
-	}
-
-	public void setCsvColumnSeparator(String csvColumnSeparator) {
-		this.csvColumnSeparator = csvColumnSeparator;
+	public void setCsvConfig(CsvConfig csvConfig) {
+		this.csvConfig = csvConfig;
 	}
 
 }
